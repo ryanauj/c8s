@@ -1,0 +1,26 @@
+{
+  "name": "c8s",
+  "version": "1.0.0",
+  "description": "Kubernetes Resource Visualizer",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build:all": "npm run build:backend && npm run build:frontend",
+    "start:backend": "cd backend && npm run dev",
+    "start:frontend": "cd frontend && npm start",
+    "dev": "echo 'Run npm run start:backend in one terminal and npm run start:frontend in another terminal'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ryanauj/c8s"
+  },
+  "keywords": [
+    "kubernetes",
+    "visualization",
+    "k8s",
+    "react-flow"
+  ],
+  "author": "",
+  "license": "ISC"
+}
