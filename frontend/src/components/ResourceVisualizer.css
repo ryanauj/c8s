@@ -1,0 +1,138 @@
+.resource-visualizer {
+  width: 100%;
+  height: calc(100vh - 60px);
+  background-color: #fafafa;
+}
+
+.resource-visualizer.loading,
+.resource-visualizer.error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-spinner {
+  font-size: 18px;
+  color: #666;
+  padding: 20px;
+}
+
+.error-message {
+  text-align: center;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error-message h3 {
+  color: #d32f2f;
+  margin-top: 0;
+}
+
+.error-message p {
+  color: #666;
+  margin: 10px 0;
+}
+
+.error-message button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.error-message button:hover {
+  background-color: #115293;
+}
+
+.node-label {
+  text-align: center;
+  font-size: 12px;
+}
+
+.node-icon {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.node-name {
+  font-weight: 600;
+  margin: 3px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.node-type,
+.node-namespace,
+.node-service-type,
+.node-replicas {
+  font-size: 10px;
+  opacity: 0.9;
+  margin: 2px 0;
+}
+
+.node-status {
+  font-size: 10px;
+  font-weight: 600;
+  margin-top: 3px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.node-status.status-running,
+.node-status.status-true {
+  background-color: rgba(76, 175, 80, 0.3);
+}
+
+.node-status.status-pending {
+  background-color: rgba(255, 152, 0, 0.3);
+}
+
+.node-status.status-failed,
+.node-status.status-unknown {
+  background-color: rgba(244, 67, 54, 0.3);
+}
+
+.legend {
+  background-color: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+}
+
+.legend h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  font-size: 12px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* React Flow custom styles */
+.react-flow__node {
+  cursor: pointer;
+}
+
+.react-flow__node:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
