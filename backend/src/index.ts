@@ -66,6 +66,8 @@ app.get('/api/nodes', async (req: Request, res: Response) => {
     const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
     const nodesResponse = await k8sApi.listNode();
     
+    // Note: Using 'any' type here due to inconsistent type definitions in @kubernetes/client-node
+    // The library's TypeScript definitions don't properly expose the 'body' property
     const nodesList = nodesResponse as any;
     const nodes = nodesList.body.items.map((node: any) => ({
       id: node.metadata?.uid || '',

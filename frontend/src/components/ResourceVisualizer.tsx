@@ -58,6 +58,10 @@ const ResourceVisualizer: React.FC<{ refreshTrigger: number }> = ({ refreshTrigg
         });
       });
       
+      // Group pods by namespace and limit display for performance
+      // Note: Displaying too many nodes can impact visualization performance
+      const MAX_PODS_PER_NAMESPACE = 50; // Increased from 20 to support larger deployments
+      
       // Group pods by namespace
       const podsByNamespace: Record<string, typeof resources.pods> = {};
       resources.pods.forEach(pod => {
@@ -70,7 +74,8 @@ const ResourceVisualizer: React.FC<{ refreshTrigger: number }> = ({ refreshTrigg
       // Create nodes for pods (grouped by namespace)
       let podYOffset = 300;
       Object.entries(podsByNamespace).forEach(([namespace, pods], nsIndex) => {
-        pods.slice(0, 20).forEach((pod, podIndex) => {
+        const displayPods = pods.slice(0, MAX_PODS_PER_NAMESPACE);
+        displayPods.forEach((pod, podIndex) => {
           const podNode: Node = {
             id: pod.id,
             type: 'default',
@@ -117,7 +122,7 @@ const ResourceVisualizer: React.FC<{ refreshTrigger: number }> = ({ refreshTrigg
             }
           }
         });
-        podYOffset += Math.ceil(Math.min(pods.length, 20) / 6) * 120 + 50;
+        podYOffset += Math.ceil(Math.min(displayPods.length, MAX_PODS_PER_NAMESPACE) / 6) * 120 + 50;
       });
       
       // Create nodes for deployments
