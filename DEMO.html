@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Resource Visualizer - Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fafafa;
+        }
+        .header {
+            background-color: #282c34;
+            color: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #3a3f47;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .context-bar {
+            background-color: #f5f5f5;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .context-bar label {
+            font-weight: 600;
+        }
+        .context-bar select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-width: 250px;
+        }
+        .legend {
+            position: absolute;
+            top: 120px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .legend h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0;
+            font-size: 12px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        .demo-description {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .demo-description h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .demo-description ul {
+            line-height: 1.8;
+        }
+        .demo-description code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .feature-card {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #1976d2;
+        }
+        .feature-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            color: #333;
+        }
+        .feature-card p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔷 Kubernetes Resource Visualizer</h1>
+    </div>
+    
+    <div class="context-bar">
+        <label>Kubernetes Context:</label>
+        <select>
+            <option>production-cluster (eks.amazonaws.com)</option>
+            <option>staging-cluster (gke.google.com)</option>
+            <option>development-cluster (minikube)</option>
+        </select>
+        <span style="font-size: 12px; color: #666;">Current: production-cluster</span>
+    </div>
+    
+    <div class="legend">
+        <h4>Legend</h4>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #1976d2;"></div>
+            <span>Nodes</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #4caf50;"></div>
+            <span>Pods</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #ff9800;"></div>
+            <span>Deployments</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #9c27b0;"></div>
+            <span>Services</span>
+        </div>
+    </div>
+    
+    <div class="demo-description">
+        <h2>📊 Kubernetes Resource Visualizer</h2>
+        <p>
+            A full-stack application that provides an interactive graph visualization of your Kubernetes cluster resources.
+            When connected to a real cluster, you'll see:
+        </p>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>🖥️ Cluster Nodes</h3>
+                <p>Physical or virtual machines in your cluster displayed as blue nodes</p>
+            </div>
+            <div class="feature-card">
+                <h3>📦 Pods</h3>
+                <p>Running containers grouped by namespace shown in green</p>
+            </div>
+            <div class="feature-card">
+                <h3>🚀 Deployments</h3>
+                <p>Deployment resources managing your pods in orange</p>
+            </div>
+            <div class="feature-card">
+                <h3>🌐 Services</h3>
+                <p>Service endpoints exposing your applications in purple</p>
+            </div>
+        </div>
+        
+        <h3 style="margin-top: 30px;">✨ Key Features</h3>
+        <ul>
+            <li><strong>Context Switching:</strong> Easily switch between different Kubernetes contexts using the dropdown</li>
+            <li><strong>Interactive Graph:</strong> Pan, zoom, and drag nodes to explore your cluster topology</li>
+            <li><strong>Relationship Mapping:</strong> Visual edges show connections between pods, nodes, deployments, and services</li>
+            <li><strong>Real-time Status:</strong> See the current status of each resource (Running, Pending, Failed)</li>
+            <li><strong>Namespace Grouping:</strong> Pods are organized by namespace for better clarity</li>
+            <li><strong>Minimap Navigation:</strong> Quick overview and navigation with the minimap control</li>
+        </ul>
+        
+        <h3>🚀 Getting Started</h3>
+        <p>To use this application with your Kubernetes cluster:</p>
+        <ol>
+            <li>Ensure you have <code>kubectl</code> configured with access to your cluster</li>
+            <li>Start the backend: <code>cd backend && npm run dev</code></li>
+            <li>Start the frontend: <code>cd frontend && npm start</code></li>
+            <li>Open <code>http://localhost:3000</code> in your browser</li>
+            <li>Select your Kubernetes context from the dropdown</li>
+            <li>Watch your cluster resources visualize in an interactive graph!</li>
+        </ol>
+        
+        <h3>🔧 Technical Stack</h3>
+        <div style="display: flex; gap: 20px; margin-top: 15px;">
+            <div>
+                <strong>Backend:</strong>
+                <ul style="margin-top: 5px;">
+                    <li>Node.js + Express</li>
+                    <li>TypeScript</li>
+                    <li>@kubernetes/client-node</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Frontend:</strong>
+                <ul style="margin-top: 5px;">
+                    <li>React + TypeScript</li>
+                    <li>react-flow</li>
+                    <li>Axios</li>
+                </ul>
+            </div>
+        </div>
+        
+        <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 14px;">
+            <strong>Note:</strong> This demo page shows the UI structure. When connected to a real Kubernetes cluster,
+            the main area would display an interactive graph visualization using react-flow with your actual cluster resources.
+        </p>
+    </div>
+</body>
+</html>
