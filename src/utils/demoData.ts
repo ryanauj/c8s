@@ -1,0 +1,206 @@
+import type { WorkflowNode, WorkflowEdge } from '../types';
+
+export const initialNodes: WorkflowNode[] = [
+  {
+    id: 'container-ingress',
+    type: 'container',
+    position: { x: 50, y: 50 },
+    data: {
+      label: 'Ingress Gateway',
+      image: 'envoyproxy/envoy:v1.28',
+      namespace: 'default',
+      status: 'running',
+      resources: { cpuRequest: '100m', cpuLimit: '500m', memoryRequest: '128Mi', memoryLimit: '512Mi', replicas: 2 },
+      expanded: true,
+      subNodes: [
+        {
+          id: 'ingress-router',
+          type: 'sub-node' as const,
+          position: { x: 30, y: 40 },
+          data: { label: 'Route', type: 'generic' as const, status: 'running' as const, description: 'HTTP request routing' },
+        },
+        {
+          id: 'ingress-auth',
+          type: 'sub-node' as const,
+          position: { x: 200, y: 40 },
+          data: { label: 'Auth Check', type: 'webhook' as const, status: 'running' as const, description: 'JWT validation' },
+        },
+      ],
+      subEdges: [
+        { id: 'e-ingress-1', source: 'ingress-router', target: 'ingress-auth', animated: true },
+      ],
+    },
+  },
+  {
+    id: 'container-ai-pipeline',
+    type: 'container',
+    position: { x: 500, y: 30 },
+    data: {
+      label: 'AI Pipeline',
+      image: 'ai-pipeline:latest',
+      namespace: 'ml',
+      status: 'running',
+      resources: { cpuRequest: '500m', cpuLimit: '2000m', memoryRequest: '1Gi', memoryLimit: '4Gi', replicas: 3 },
+      expanded: true,
+      subNodes: [
+        {
+          id: 'ai-classify',
+          type: 'sub-node' as const,
+          position: { x: 20, y: 40 },
+          data: { label: 'Classify Intent', type: 'ai-tool-call' as const, status: 'running' as const, model: 'claude-sonnet-4-6', toolName: 'classify' },
+        },
+        {
+          id: 'ai-extract',
+          type: 'sub-node' as const,
+          position: { x: 200, y: 10 },
+          data: { label: 'Extract Entities', type: 'ai-tool-call' as const, status: 'idle' as const, model: 'claude-sonnet-4-6', toolName: 'extract' },
+        },
+        {
+          id: 'ai-generate',
+          type: 'sub-node' as const,
+          position: { x: 200, y: 70 },
+          data: { label: 'Generate Response', type: 'ai-tool-call' as const, status: 'idle' as const, model: 'claude-opus-4-6', toolName: 'generate' },
+        },
+        {
+          id: 'ai-merge',
+          type: 'sub-node' as const,
+          position: { x: 380, y: 40 },
+          data: { label: 'Merge Results', type: 'transform' as const, status: 'idle' as const, description: 'Combine extraction + generation' },
+        },
+      ],
+      subEdges: [
+        { id: 'e-ai-1', source: 'ai-classify', target: 'ai-extract', animated: true },
+        { id: 'e-ai-2', source: 'ai-classify', target: 'ai-generate', animated: true },
+        { id: 'e-ai-3', source: 'ai-extract', target: 'ai-merge' },
+        { id: 'e-ai-4', source: 'ai-generate', target: 'ai-merge' },
+      ],
+    },
+  },
+  {
+    id: 'container-data-store',
+    type: 'container',
+    position: { x: 200, y: 350 },
+    data: {
+      label: 'Data Store',
+      image: 'postgres:16-alpine',
+      namespace: 'data',
+      status: 'running',
+      resources: { cpuRequest: '250m', cpuLimit: '1000m', memoryRequest: '512Mi', memoryLimit: '2Gi', replicas: 1 },
+      expanded: true,
+      subNodes: [
+        {
+          id: 'db-write',
+          type: 'sub-node' as const,
+          position: { x: 30, y: 40 },
+          data: { label: 'Write', type: 'generic' as const, status: 'idle' as const, description: 'Insert/update records' },
+        },
+        {
+          id: 'db-read',
+          type: 'sub-node' as const,
+          position: { x: 200, y: 40 },
+          data: { label: 'Query', type: 'generic' as const, status: 'idle' as const, description: 'Read queries' },
+        },
+      ],
+      subEdges: [],
+    },
+  },
+  {
+    id: 'container-notifier',
+    type: 'container',
+    position: { x: 700, y: 350 },
+    data: {
+      label: 'Notifier Service',
+      image: 'notifier:v2.1',
+      namespace: 'default',
+      status: 'running',
+      resources: { cpuRequest: '50m', cpuLimit: '200m', memoryRequest: '64Mi', memoryLimit: '256Mi', replicas: 1 },
+      expanded: true,
+      subNodes: [
+        {
+          id: 'notify-format',
+          type: 'sub-node' as const,
+          position: { x: 30, y: 40 },
+          data: { label: 'Format', type: 'transform' as const, status: 'idle' as const, description: 'Template rendering' },
+        },
+        {
+          id: 'notify-send',
+          type: 'sub-node' as const,
+          position: { x: 200, y: 40 },
+          data: { label: 'Send', type: 'webhook' as const, status: 'idle' as const, description: 'Dispatch notifications' },
+        },
+      ],
+      subEdges: [
+        { id: 'e-notify-1', source: 'notify-format', target: 'notify-send', animated: true },
+      ],
+    },
+  },
+];
+
+export const initialEdges: WorkflowEdge[] = [
+  {
+    id: 'e-ingress-to-ai',
+    source: 'container-ingress',
+    target: 'container-ai-pipeline',
+    sourceHandle: 'ingress-auth-source',
+    targetHandle: 'ai-classify-target',
+    animated: true,
+    style: { stroke: '#6366f1', strokeWidth: 2 },
+    label: 'HTTP',
+    data: {
+      sourceContainerId: 'container-ingress',
+      targetContainerId: 'container-ai-pipeline',
+      sourceSubNodeId: 'ingress-auth',
+      targetSubNodeId: 'ai-classify',
+      protocol: 'http' as const,
+    },
+  },
+  {
+    id: 'e-ai-to-db',
+    source: 'container-ai-pipeline',
+    target: 'container-data-store',
+    sourceHandle: 'ai-merge-source',
+    targetHandle: 'db-write-target',
+    animated: true,
+    style: { stroke: '#10b981', strokeWidth: 2 },
+    label: 'gRPC',
+    data: {
+      sourceContainerId: 'container-ai-pipeline',
+      targetContainerId: 'container-data-store',
+      sourceSubNodeId: 'ai-merge',
+      targetSubNodeId: 'db-write',
+      protocol: 'grpc' as const,
+    },
+  },
+  {
+    id: 'e-ai-to-notifier',
+    source: 'container-ai-pipeline',
+    target: 'container-notifier',
+    sourceHandle: 'ai-merge-source',
+    targetHandle: 'notify-format-target',
+    style: { stroke: '#f59e0b', strokeWidth: 2 },
+    label: 'Event',
+    data: {
+      sourceContainerId: 'container-ai-pipeline',
+      targetContainerId: 'container-notifier',
+      sourceSubNodeId: 'ai-merge',
+      targetSubNodeId: 'notify-format',
+      protocol: 'event' as const,
+    },
+  },
+  {
+    id: 'e-db-to-notifier',
+    source: 'container-data-store',
+    target: 'container-notifier',
+    sourceHandle: 'db-read-source',
+    targetHandle: 'notify-format-target',
+    style: { stroke: '#8b5cf6', strokeWidth: 2, strokeDasharray: '5,5' },
+    label: 'TCP',
+    data: {
+      sourceContainerId: 'container-data-store',
+      targetContainerId: 'container-notifier',
+      sourceSubNodeId: 'db-read',
+      targetSubNodeId: 'notify-format',
+      protocol: 'tcp' as const,
+    },
+  },
+];
